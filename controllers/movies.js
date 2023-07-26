@@ -16,10 +16,10 @@ const getMovies = (req, res, next) => {
     .catch(next);
 };
 
-const createCard = (req, res, next) => {
-  const { name, link } = req.body;
-  movieModel.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(CREATED).send(card))
+const createMovie = (req, res, next) => {
+  const { country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN } = req.body;
+  movieModel.create({ country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN, owner: req.user._id })
+    .then((movie) => res.status(CREATED).send(movie))
     .catch((err) => {
       if (err instanceof ValidationError) {
         next(new BadRequestStatusError('Переданы некорректные данные'));
@@ -29,13 +29,13 @@ const createCard = (req, res, next) => {
     });
 };
 
-const deleteCard = (req, res, next) => {
-  movieModel.findById(req.params.cardId)
-    .then((card) => {
-      if (!card) {
+const deleteMovie = (req, res, next) => {
+  movieModel.findById(req.params.movieId)
+    .then((movie) => {
+      if (!movie) {
         throw new NotFoundStatusError('Запрашиваемая карточка не найдена');
-      } else if (req.user._id === card.owner.toString()) {
-        return movieModel.findByIdAndRemove(req.params.cardId)
+      } else if (req.user._id === movie.owner.toString()) {
+        return movieModel.findByIdAndRemove(req.params.movieId)
           .then(() => res.status(OK_STATUS).send({ message: 'Карточка удалена' }));
       } else {
         return next(new ForbiddenStatusError('Вы не можете удалить не ваши карточки'));
@@ -48,17 +48,17 @@ const deleteCard = (req, res, next) => {
     });
 };
 
-const likeCard = (req, res, next) => {
+const likeMovie = (req, res, next) => {
   movieModel.findByIdAndUpdate(
-    req.params.cardId,
+    req.params.movieId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
+    .then((movie) => {
+      if (!movie) {
         throw new NotFoundStatusError('Запрашиваемая карточка не найдена');
       }
-      res.send(card);
+      res.send(movie);
     })
     .catch((err) => {
       if (err instanceof CastError) {
@@ -67,17 +67,17 @@ const likeCard = (req, res, next) => {
     });
 };
 
-const dislikeCard = (req, res, next) => {
+const dislikeMovie = (req, res, next) => {
   movieModel.findByIdAndUpdate(
-    req.params.cardId,
+    req.params.movieId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
+    .then((movie) => {
+      if (!movie) {
         throw new NotFoundStatusError('Запрашиваемая карточка не найдена');
       }
-      res.send(card);
+      res.send(movie);
     })
     .catch((err) => {
       if (err instanceof CastError) {
@@ -88,8 +88,8 @@ const dislikeCard = (req, res, next) => {
 
 module.exports = {
   getMovies,
-  createCard,
-  deleteCard,
-  likeCard,
-  dislikeCard,
+  createMovie,
+  deleteMovie,
+  likeMovie,
+  dislikeMovie,
 };
