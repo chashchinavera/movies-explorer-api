@@ -1,15 +1,15 @@
 const { ValidationError, CastError } = require('mongoose').Error;
 const movieModel = require('../models/movie');
-const BadRequestStatusError = require('../errors/BadRequestStatusError');
-const NotFoundStatusError = require('../errors/NotFoundStatusError');
-const ForbiddenStatusError = require('../errors/ForbiddenStatusError');
+const BadRequestStatusError = require('../utils/errors/BadRequestStatusError');
+const NotFoundStatusError = require('../utils/errors/NotFoundStatusError');
+const ForbiddenStatusError = require('../utils/errors/ForbiddenStatusError');
 const {
   OK_STATUS,
   CREATED,
 } = require('../utils/constants');
 
 const getMovies = (req, res, next) => {
-  movieModel.find({})
+  movieModel.find({ owner: req.user._id })
     .then((movie) => {
       res.send(movie);
     })
@@ -17,8 +17,33 @@ const getMovies = (req, res, next) => {
 };
 
 const createMovie = (req, res, next) => {
-  const { country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN } = req.body;
-  movieModel.create({ country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN, owner: req.user._id })
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
+  } = req.body;
+  movieModel.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
+    owner: req.user._id,
+  })
     .then((movie) => res.status(CREATED).send(movie))
     .catch((err) => {
       if (err instanceof ValidationError) {
@@ -33,17 +58,17 @@ const deleteMovie = (req, res, next) => {
   movieModel.findById(req.params.movieId)
     .then((movie) => {
       if (!movie) {
-        throw new NotFoundStatusError('Запрашиваемая карточка не найдена');
+        throw new NotFoundStatusError('Запрашиваемый фильм не найден');
       } else if (req.user._id === movie.owner.toString()) {
         return movieModel.findByIdAndRemove(req.params.movieId)
-          .then(() => res.status(OK_STATUS).send({ message: 'Карточка удалена' }));
+          .then(() => res.status(OK_STATUS).send({ message: 'Фильм удален' }));
       } else {
-        return next(new ForbiddenStatusError('Вы не можете удалить не ваши карточки'));
+        return next(new ForbiddenStatusError('Вы не можете удалить не ваши фильмы'));
       }
     })
     .catch((err) => {
       if (err instanceof CastError) {
-        next(new BadRequestStatusError('По указанному id карточка не найдена'));
+        next(new BadRequestStatusError('По указанному id фильм не найден'));
       } else next(err);
     });
 };
@@ -56,13 +81,13 @@ const likeMovie = (req, res, next) => {
   )
     .then((movie) => {
       if (!movie) {
-        throw new NotFoundStatusError('Запрашиваемая карточка не найдена');
+        throw new NotFoundStatusError('Запрашиваемая фильм не найден');
       }
       res.send(movie);
     })
     .catch((err) => {
       if (err instanceof CastError) {
-        next(new BadRequestStatusError('По указанному id карточка не найдена'));
+        next(new BadRequestStatusError('По указанному id фильм не найден'));
       } else next(err);
     });
 };
@@ -75,13 +100,13 @@ const dislikeMovie = (req, res, next) => {
   )
     .then((movie) => {
       if (!movie) {
-        throw new NotFoundStatusError('Запрашиваемая карточка не найдена');
+        throw new NotFoundStatusError('Запрашиваемая фильм не найден');
       }
       res.send(movie);
     })
     .catch((err) => {
       if (err instanceof CastError) {
-        next(new BadRequestStatusError('По указанному id карточка не найдена'));
+        next(new BadRequestStatusError('По указанному id фильм не найден'));
       } else next(err);
     });
 };

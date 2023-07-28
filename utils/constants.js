@@ -13,6 +13,13 @@ const SECRET_KEY = 'super_secret';
 
 DB_ADDRESS = 'mongodb://127.0.0.1:27017/bitfilmsdb';
 
+const limiterConfiguration = {
+  windowMs: 10 * 60 * 1000,
+  max: 1000,
+  legacyHeaders: false,
+  standardHeaders: true,
+};
+
 module.exports = {
   OK_STATUS,
   CREATED,
@@ -25,4 +32,5 @@ module.exports = {
   rule,
   SECRET_KEY,
   DB_ADDRESS,
+  limiterConfiguration,
 };

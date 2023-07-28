@@ -1,32 +1,12 @@
 const bcrypt = require('bcryptjs');
-const { CastError, ValidationError } = require('mongoose').Error;
+const { ValidationError } = require('mongoose').Error;
 const userModel = require('../models/user');
 const { signToken } = require('../utils/jwtAuth');
-const ConflictStatusError = require('../errors/ConflictStatusError');
-const BadRequestStatusError = require('../errors/BadRequestStatusError');
-const UnauthorizedStatusError = require('../errors/UnauthorizedStatusError');
+const ConflictStatusError = require('../utils/errors/ConflictStatusError');
+const BadRequestStatusError = require('../utils/errors/BadRequestStatusError');
+const UnauthorizedStatusError = require('../utils/errors/UnauthorizedStatusError');
 const sendUser = require('../utils/sendUser');
 const { CREATED, OK_STATUS } = require('../utils/constants');
-
-const getUsers = (req, res, next) => {
-  userModel.find({})
-    .then((users) => {
-      res.send({ users });
-    })
-    .catch(next);
-};
-
-const getUserById = (req, res, next) => {
-  userModel.findById(req.params.userId)
-    .then((user) => sendUser(res, user))
-    .catch((err) => {
-      if (err instanceof CastError) {
-        next(new BadRequestStatusError('По указанному id пользователь не найден'));
-      } else {
-        next(err);
-      }
-    });
-};
 
 const createUser = (req, res, next) => {
   const {
@@ -60,12 +40,14 @@ const createUser = (req, res, next) => {
 };
 
 const updateProfile = (req, res, next) => {
-  const { name } = req.body;
-  userModel.findByIdAndUpdate(req.user._id, { name }, { new: true, runValidators: true })
+  const { name, email } = req.body;
+  userModel.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
     .then((user) => sendUser(res, user))
     .catch((err) => {
       if (err instanceof ValidationError) {
         next(new BadRequestStatusError('Переданы некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new ConflictStatusError('Такой пользователь уже существует'));
       } else {
         next(err);
       }
@@ -103,16 +85,9 @@ const getUser = (req, res, next) => {
     .catch(next);
 };
 
-const signOut = (req, res) => {
-  res.clearCookie('token').send({ message: 'Вы вышли из системы' });
-};
-
 module.exports = {
-  getUsers,
-  getUserById,
   getUser,
   createUser,
   updateProfile,
   login,
-  signOut,
 };
