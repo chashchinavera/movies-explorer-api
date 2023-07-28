@@ -4,7 +4,7 @@
 ### **Ссылки на проект**
 ***
 
-IP-адрес: 158.160.58.149
+IP-адрес: 51.250.79.165
 
 Backend: https://api.chashchinavv.nomoreparties.sbs/
 
