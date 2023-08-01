@@ -1,6 +1,11 @@
 # **Проект Movies**
 > Бэкенд
 
+### **Версии проекта**
+***
+1. Mesto (бэкенд): *этот репозиторий*
+2. [Mesto (React, регистрация и авторизация)](https://github.com/chashchinavera/movies-explorer-frontend)
+
 ### **Ссылки на проект**
 ***
 
