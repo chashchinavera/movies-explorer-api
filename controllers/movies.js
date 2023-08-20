@@ -73,48 +73,8 @@ const deleteMovie = (req, res, next) => {
     });
 };
 
-const likeMovie = (req, res, next) => {
-  movieModel.findByIdAndUpdate(
-    req.params.movieId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .then((movie) => {
-      if (!movie) {
-        throw new NotFoundStatusError('Запрашиваемая фильм не найден');
-      }
-      res.send(movie);
-    })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        next(new BadRequestStatusError('По указанному id фильм не найден'));
-      } else next(err);
-    });
-};
-
-const dislikeMovie = (req, res, next) => {
-  movieModel.findByIdAndUpdate(
-    req.params.movieId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
-    .then((movie) => {
-      if (!movie) {
-        throw new NotFoundStatusError('Запрашиваемая фильм не найден');
-      }
-      res.send(movie);
-    })
-    .catch((err) => {
-      if (err instanceof CastError) {
-        next(new BadRequestStatusError('По указанному id фильм не найден'));
-      } else next(err);
-    });
-};
-
 module.exports = {
   getMovies,
   createMovie,
   deleteMovie,
-  likeMovie,
-  dislikeMovie,
 };
