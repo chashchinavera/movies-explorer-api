@@ -11,12 +11,6 @@
 
 ### **Ссылки на проект**
 ***
-
-IP-адрес: 62.84.114.212
-
-Backend: https://api.chashchinavv.nomoreparties.sbs/
-Frontend: https://api.chashchinavv.nomoreparties.sbs/
-
 [Ссылка на репозиторий](https://github.com/chashchinavera/movies-explorer-api)
 
 ## Директории
