@@ -21,7 +21,17 @@
   
 Остальные директории вспомогательные, создаются при необходимости разработчиком
 
-## Запуск проекта
-
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+### **Как посмотреть проект**
+***
+```
+$  git clone https://github.com/chashchinavera/movies-explorer-api.git
+```
+```
+$  cd movies-explorer-api
+```
+```
+$  npm i 
+```
+```
+$  npm start
+```

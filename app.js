@@ -1,20 +1,20 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const helmet = require('helmet');
-const rateLimiter = require('express-rate-limit');
-const { limiterConfiguration } = require('./utils/constants');
-const { errors } = require('celebrate');
-const router = require('./routes');
-const error = require('./middlewares/error');
-const { requestLogger, errorLogger } = require('./middlewares/logCollector');
-const cors = require('./middlewares/cors');
-const { DB_ADDRESS } = require('./utils/constants');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const helmet = require("helmet");
+const rateLimiter = require("express-rate-limit");
+const { limiterConfiguration } = require("./utils/constants");
+const { errors } = require("celebrate");
+const router = require("./routes");
+const error = require("./middlewares/error");
+const { requestLogger, errorLogger } = require("./middlewares/logCollector");
+const cors = require("./middlewares/cors");
+const { DB_ADDRESS } = require("./utils/constants");
 const limiter = rateLimiter(limiterConfiguration);
 
 mongoose.connect(DB_ADDRESS);
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 
 const app = express();
 
