@@ -14,7 +14,7 @@ const limiter = rateLimiter(limiterConfiguration);
 
 mongoose.connect(DB_ADDRESS);
 
-const { PORT = 3001 } = process.env;
+const {PORT = 3001} = process.env;
 
 const app = express();
 

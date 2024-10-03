@@ -11,7 +11,7 @@ const rule = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{
 
 const SECRET_KEY = 'super_secret';
 
-DB_ADDRESS = 'mongodb://127.0.0.1:27017/bitfilmsdb';
+DB_ADDRESS = 'mongodb://0.0.0.0:27017/bitfilmsdb';
 
 const limiterConfiguration = {
   windowMs: 10 * 60 * 1000,
